@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Auth;
 class TransactionController extends Controller
 {
     public function index(Request $request) {
-        if(!Auth::check()) { // sudah login atau belum
-            return redirect("login");
-        }
+        // if(!Auth::check()) { // sudah login atau belum
+        //     return redirect("login");
+        // }
 
         $month = $request->query("month");
         $transactions = Transaction::where("user_id", Auth::id())
@@ -30,17 +30,17 @@ class TransactionController extends Controller
     }
 
     public function create() {
-        if(!Auth::check()) { // sudah login atau belum
-            return redirect("login");
-        }
+        // if(!Auth::check()) { // sudah login atau belum
+        //     return redirect("login");
+        // }
 
         return view('transactions.create');
     }
 
     public function store(Request $request) {
-        if(!Auth::check()) { // sudah login atau belum
-            return redirect("login");
-        }
+        // if(!Auth::check()) { // sudah login atau belum
+        //     return redirect("login");
+        // }
 
         $request->validate([
             'date'=> 'required|date',
@@ -62,9 +62,9 @@ class TransactionController extends Controller
 
 
     public function show($id) {
-        if(!Auth::check()) { // sudah login atau belum
-            return redirect("login");
-        }
+        // if(!Auth::check()) { // sudah login atau belum
+        //     return redirect("login");
+        // }
 
         $transaction = Transaction::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
         return view('transactions.show', compact('transaction'));
@@ -72,9 +72,9 @@ class TransactionController extends Controller
 
 
     public function edit($id) {
-        if(!Auth::check()) { // sudah login atau belum
-            return redirect("login");
-        }
+        // if(!Auth::check()) { // sudah login atau belum
+        //     return redirect("login");
+        // }
 
         $transaction = Transaction::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
         return view('transactions.edit', compact('transaction'));
@@ -82,9 +82,9 @@ class TransactionController extends Controller
 
 
     public function update(Request $request, $id){
-        if(!Auth::check()) { // sudah login atau belum
-            return redirect("login");
-        }
+        // if(!Auth::check()) { // sudah login atau belum
+        //     return redirect("login");
+        // }
 
         $request->validate([
             'date' => 'required|date',
@@ -107,9 +107,9 @@ class TransactionController extends Controller
 
 
     public function destroy($id) {
-        if(!Auth::check()) { // sudah login atau belum
-            return redirect("login");
-        }
+        // if(!Auth::check()) { // sudah login atau belum
+        //     return redirect("login");
+        // }
 
         $transaction = Transaction::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
         $transaction->delete();

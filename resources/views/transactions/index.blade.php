@@ -30,27 +30,27 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($transactions as $transaction)
-                    <tr class="border-b hover:bg-gray-100">
-                        <td class="px-4 py-2 text-gray-800">{{ date('d M Y', strtotime($transaction->date)) }}</td>
-                        <td class="px-4 py-2 text-right font-semibold
-                            {{ $transaction->type == 'income' ? 'text-green-600' : 'text-red-600' }}">
-                            Rp {{ number_format($transaction->amount, 0, ',', '.') }}
-                        </td>
-                        <td class="px-4 py-2 text-center">
-                            <span class="px-3 py-1 rounded-full text-white
-                                {{ $transaction->type == 'income' ? 'bg-green-600' : 'bg-red-700' }}">
-                                {{ $transaction->type == 'income' ? 'Pemasukan' : 'Pengeluaran' }}
-                            </span>
-                        </td>
-                        <td class="px-4 py-2 text-center">
-                            <a href="{{ route('transactions.show', $transaction->id) }}"
-                                class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600">
-                                Detail
-                            </a>
-                        </td>
-                    </tr>
-                @endforeach
+                    @foreach($transactions as $transaction)
+                        <tr class="border-b hover:bg-gray-100">
+                            <td class="px-4 py-2 text-gray-800">{{ date('d M Y', strtotime($transaction->date)) }}</td>
+                            <td class="px-4 py-2 text-right font-semibold
+                                {{ $transaction->type == 'income' ? 'text-green-600' : 'text-red-600' }}">
+                                Rp {{ number_format($transaction->amount, 0, ',', '.') }}
+                            </td>
+                            <td class="px-4 py-2 text-center">
+                                <span class="px-3 py-1 rounded-full text-white
+                                    {{ $transaction->type == 'income' ? 'bg-green-600' : 'bg-red-700' }}">
+                                    {{ $transaction->type == 'income' ? 'Pemasukan' : 'Pengeluaran' }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-2 text-center">
+                                <a href="{{ route('transactions.show', $transaction->id) }}"
+                                    class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600">
+                                    Detail
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
             </tbody>
         </table>
     </div>

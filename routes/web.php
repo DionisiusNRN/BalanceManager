@@ -6,29 +6,24 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    if (Auth::check()) {
+        return redirect('/transactions'); // Redirect ke transaksi jika sudah login
+    } else {
+        return redirect('login'); // Redirect ke transaksi jika sudah login
+    }
 });
 
-
-
-// Halaman login & register
-Route::get('login', [AuthController::class, 'login']);
+// Handle login & register
+Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'authenticate']);
-Route::get('logout', [AuthController::class,'logout']);
-Route::get('register', [AuthController::class, 'register_form']);
+Route::post('logout', [AuthController::class,'logout']);
+Route::get('register', [AuthController::class, 'register_form'])->name('register');
 Route::post('register', [AuthController::class, 'register']);
 
-// Logout (harus pakai POST karena Laravel menangani logout dengan method POST)
-// Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-// Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
-
-
-
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Auth::routes(); // Tidak perlu ada tambahan rute home atau yang lainnya
 
 Route::middleware(['auth'])->group(function () {
+    // Handle Transactions
     Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
     Route::get('/transactions/create', [TransactionController::class, 'create'])->name('transactions.create');
     Route::post('/transactions', [TransactionController::class,'store'])->name('transactions.store');

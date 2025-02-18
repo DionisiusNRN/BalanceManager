@@ -11,12 +11,12 @@
         @csrf
         <div>
             <label class="block">Tanggal:</label>
-            <input type="date" name="date" required class="border p-2 w-full">
+            <input type="date" name="date" required class="border p-2 w-fit">
         </div>
 
         <div>
             <label class="block">Jumlah:</label>
-            <input type="number" name="amount" required class="border p-2 w-full">
+            <input type="number" name="amount" required class="border p-2 w-fit">
         </div>
 
         <div>
@@ -27,7 +27,7 @@
 
         <div>
             <label class="block">Deskripsi:</label>
-            <input type="text" name="description" required class="border p-2 w-full">
+            <input type="text" name="description" required class="border p-2 w-fit">
         </div>
 
         <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">

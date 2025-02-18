@@ -10,6 +10,13 @@
         </div>
     @endif
 
+    @if(session('status'))
+        <div class="bg-green-500 text-white p-3 rounded-lg mb-4">
+            {{ session('status') }}
+        </div>
+    @endif
+
+
     <form action="{{ url("login") }}" method="POST">
         @csrf
 

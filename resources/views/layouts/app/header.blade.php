@@ -5,12 +5,13 @@
 
     <div>
         @if(Auth::check())
-            <form action="{{ url("logout") }}" method="POST" class="inline">
-                @csrf
-                <a href="{{ url("logout") }}" type="button" class="bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700">
-                    Logout
-                </a>
-            </form>
+        <form action="{{ url('logout') }}" method="POST" class="inline">
+            @csrf
+            <button type="submit" class="bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700">
+                Logout
+            </button>
+        </form>
+
         @else
             <a href="{{ url("login") }}" class="bg-blue-500 px-4 py-2 rounded-lg hover:bg-blue-600">
                 Login

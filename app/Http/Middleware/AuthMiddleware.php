@@ -12,7 +12,7 @@ class AuthMiddleware
     {
         // Jika user belum login, arahkan ke login
         if (!Auth::check()) {
-            return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
+            return redirect('login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
         return $next($request);

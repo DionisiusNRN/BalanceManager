@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -23,6 +24,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        // return view('auth.login');
+
+        if (Auth::check()) {
+            return redirect()->route('transactions.index'); // Arahkan ke halaman transactions setelah login
+        }
+
+        // Kalau belum login, arahkan ke halaman login
+        return redirect()->route("login");
     }
 }
