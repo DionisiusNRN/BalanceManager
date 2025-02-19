@@ -5,6 +5,7 @@ use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+// halo ini perubahan
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect('/transactions'); // Redirect ke transaksi jika sudah login
