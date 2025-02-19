@@ -2,42 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Tymon\JWTAuth\Contracts\JWTSubject;
-
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class TransactionController extends Controller
 {
     public function index(Request $request) {
+        $user = JWTAuth::parseToken()->authenticate();
         $month = $request->query("month");
 
-        $transactions = Transaction::where("user_id", Auth::id())
-                                    ->when($month, function ($query) use ($month) {
-                                        return $query->whereMonth('date', $month);
-                                    })
+        $transactions = Transaction::where("user_id", $user->id)
+                                    ->when($month, fn($query) => $query->whereMonth('date', $month))
                                     ->orderBy('date', 'desc')
                                     ->get();
-
-        $totalIncome = $transactions->where('type', 'income')->sum('amount');
-        $totalExpense = $transactions->where('type', 'expense')->sum('amount');
-        $balance = $totalIncome - $totalExpense;
 
         return response()->json([
             'success' => true,
             'data' => [
                 'transactions' => $transactions,
-                'totalIncome' => $totalIncome,
-                'totalExpense' => $totalExpense,
-                'balance' => $balance
+                'totalIncome' => $transactions->where('type', 'income')->sum('amount'),
+                'totalExpense' => $transactions->where('type', 'expense')->sum('amount'),
+                'balance' => $transactions->where('type', 'income')->sum('amount') -
+                             $transactions->where('type', 'expense')->sum('amount')
             ]
         ]);
     }
 
     public function store(Request $request) {
+        $user = JWTAuth::parseToken()->authenticate();
+
         $validator = Validator::make($request->all(), [
             'date' => 'required|date',
             'amount' => 'required|numeric|min:0',
@@ -49,20 +44,34 @@ class TransactionController extends Controller
             return response()->json(['success' => false, 'message' => $validator->errors()], 400);
         }
 
-        $transaction = $request->user()->transactions()->create($request->all());
+        $transaction = Transaction::create([
+            'user_id' => $user->id,
+            'date' => $request->date,
+            'amount' => $request->amount,
+            'type' => $request->type,
+            'description' => $request->description
+        ]);
 
-        return response()->json(['success' => true, 'message' => 'Catatan keuangan berhasil disimpan.', 'data' => $transaction], 201);
+        return response()->json([
+            'success' => true,
+            'message' => 'Catatan keuangan berhasil disimpan.',
+            'data' => $transaction
+        ], 201);
     }
 
     public function show($id) {
-        $transaction = Transaction::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        $user = JWTAuth::parseToken()->authenticate();
+        $transaction = Transaction::where('id', $id)->where('user_id', $user->id)->firstOrFail();
+
         return response()->json(['success' => true, 'data' => $transaction]);
     }
 
     public function update(Request $request, $id) {
+        $user = JWTAuth::parseToken()->authenticate();
+
         $validator = Validator::make($request->all(), [
             'date' => 'required|date',
-            'amount' => 'required|numeric',
+            'amount' => 'required|numeric|min:0',
             'type' => 'required|in:income,expense',
             'description' => 'nullable|string',
         ]);
@@ -71,14 +80,19 @@ class TransactionController extends Controller
             return response()->json(['success' => false, 'message' => $validator->errors()], 400);
         }
 
-        $transaction = Transaction::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        $transaction = Transaction::where('id', $id)->where('user_id', $user->id)->firstOrFail();
         $transaction->update($request->all());
 
-        return response()->json(['success' => true, 'message' => 'Transaksi berhasil diperbarui!', 'data' => $transaction]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Transaksi berhasil diperbarui!',
+            'data' => $transaction
+        ]);
     }
 
     public function destroy($id) {
-        $transaction = Transaction::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        $user = JWTAuth::parseToken()->authenticate();
+        $transaction = Transaction::where('id', $id)->where('user_id', $user->id)->firstOrFail();
         $transaction->delete();
 
         return response()->json(['success' => true, 'message' => 'Catatan berhasil dihapus.']);

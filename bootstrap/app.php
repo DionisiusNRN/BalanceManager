@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth.custom' => \App\Http\Middleware\AuthMiddleware::class,
             'user.transactions' => \App\Http\Middleware\UserTransactionMiddleware::class,
+            // 'jwt.auth' => \App\Http\Middleware\JWTMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
