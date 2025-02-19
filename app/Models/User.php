@@ -51,4 +51,13 @@ class User extends Authenticatable
         return $this->hasMany(Transaction::class);
     }
 
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims() {
+        return [];
+    }
+
 }

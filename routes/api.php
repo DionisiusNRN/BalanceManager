@@ -24,7 +24,7 @@ Route::prefix('v1')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
 
     // Middleware auth untuk transaksi
-    Route::middleware(['auth'])->group(function () {
+    // Route::middleware(['auth'])->group(function () {
         // Handle Transactions
         Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
         Route::get('/transactions/create', [TransactionController::class, 'create'])->name('transactions.create');
@@ -33,5 +33,5 @@ Route::prefix('v1')->group(function () {
         Route::get('/transactions/{id}/edit', [TransactionController::class, 'edit'])->name('transactions.edit');
         Route::put('/transactions/{id}', [TransactionController::class, 'update'])->name('transactions.update');
         Route::delete('/transactions/{id}', [TransactionController::class, 'destroy'])->name('transactions.destroy');
-    });
+    // });
 });
