@@ -44,8 +44,15 @@ class TransactionController extends Controller
             return response()->json(['success' => false, 'message' => $validator->errors()], 400);
         }
 
+        // Cari nomor transaksi terakhir untuk user ini
+        $latestTransaction = Transaction::where('user_id', $user->id)
+                                        ->latest('transaction_number')
+                                        ->first();
+        $transactionNumber = $latestTransaction ? $latestTransaction->transaction_number + 1 : 1;
+
         $transaction = Transaction::create([
             'user_id' => $user->id,
+            'transaction_number' => $transactionNumber, // Gunakan nomor transaksi per user
             'date' => $request->date,
             'amount' => $request->amount,
             'type' => $request->type,
@@ -59,14 +66,16 @@ class TransactionController extends Controller
         ], 201);
     }
 
-    public function show($id) {
+    public function show($transactionNumber) {
         $user = JWTAuth::parseToken()->authenticate();
-        $transaction = Transaction::where('id', $id)->where('user_id', $user->id)->firstOrFail();
+        $transaction = Transaction::where('transaction_number', $transactionNumber)
+                                  ->where('user_id', $user->id)
+                                  ->firstOrFail();
 
         return response()->json(['success' => true, 'data' => $transaction]);
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $transactionNumber) {
         $user = JWTAuth::parseToken()->authenticate();
 
         $validator = Validator::make($request->all(), [
@@ -80,7 +89,10 @@ class TransactionController extends Controller
             return response()->json(['success' => false, 'message' => $validator->errors()], 400);
         }
 
-        $transaction = Transaction::where('id', $id)->where('user_id', $user->id)->firstOrFail();
+        $transaction = Transaction::where('transaction_number', $transactionNumber)
+                                  ->where('user_id', $user->id)
+                                  ->firstOrFail();
+
         $transaction->update($request->all());
 
         return response()->json([
@@ -90,9 +102,11 @@ class TransactionController extends Controller
         ]);
     }
 
-    public function destroy($id) {
+    public function destroy($transactionNumber) {
         $user = JWTAuth::parseToken()->authenticate();
-        $transaction = Transaction::where('id', $id)->where('user_id', $user->id)->firstOrFail();
+        $transaction = Transaction::where('transaction_number', $transactionNumber)
+                                  ->where('user_id', $user->id)
+                                  ->firstOrFail();
         $transaction->delete();
 
         return response()->json(['success' => true, 'message' => 'Catatan berhasil dihapus.']);
